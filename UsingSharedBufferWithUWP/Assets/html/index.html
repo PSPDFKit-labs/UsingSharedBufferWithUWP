@@ -1,0 +1,26 @@
+﻿<!DOCTYPE html>
+
+<html lang="en">
+<body>
+<img id="image" />
+<script>
+        window.onload = function () {
+            // This event is invoked when a SharedBuffer is posted to JavaScript
+            window.chrome.webview.addEventListener("sharedbufferreceived", e => {
+                let displayBuffer = e.getBuffer();
+
+                // Consume the data from the buffer (in the form of an ArrayBuffer)
+                let displayBufferArray = new Uint8Array(displayBuffer);
+
+                var image = document.getElementById('image');
+                image.src = URL.createObjectURL(
+                    new Blob([displayBufferArray.buffer], { type: 'image/jpg' })
+                );
+
+                //Release the buffer after consuming the data.
+                window.chrome.webview.releaseBuffer(displayBuffer);
+            });
+        }
+    </script>
+</body>
+</html>
